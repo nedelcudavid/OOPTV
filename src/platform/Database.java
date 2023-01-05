@@ -1,0 +1,86 @@
+package platform;
+
+import input.InputAction;
+import java.util.ArrayList;
+
+/** This singleton class represents a database that holds all movies, users and actions */
+public final class Database {
+
+    private ArrayList<Movie> moviesDB;
+    private ArrayList<RegisteredUser> usersDB;
+    private ArrayList<InputAction> actionsDB;
+    private static Database content = null;
+
+    private Database() {
+        moviesDB = new ArrayList<>();
+        usersDB = new ArrayList<>();
+        actionsDB = new ArrayList<>();
+    }
+
+    /** Singleton implementation */
+    public static Database getContent() {
+        if (content == null) {
+            content = new Database();
+        }
+        return content;
+    }
+
+    public ArrayList<Movie> getMoviesDB() {
+        return moviesDB;
+    }
+
+    public void setMoviesDB(final ArrayList<Movie> moviesDB) {
+        this.moviesDB = moviesDB;
+    }
+
+    public ArrayList<RegisteredUser> getUsersDB() {
+        return usersDB;
+    }
+
+    public void setUsersDB(final ArrayList<RegisteredUser> usersDB) {
+        this.usersDB = usersDB;
+    }
+
+    public ArrayList<InputAction> getActionsDB() {
+        return actionsDB;
+    }
+
+    public void setActionsDB(final ArrayList<InputAction> actionsDB) {
+        this.actionsDB = actionsDB;
+    }
+
+    /** This method is created to find easier the current user
+     * in the database in order to make changes to it */
+    public int findCurrentUserIdx() {
+        int wantedIdx;
+        for (int i = 0; i < Database.getContent().getUsersDB().size(); i++) {
+            if (Database.getContent().getUsersDB().get(i).getCredentials().getName()
+                    .equals(Executable.getExe().getCurrentUser().getCredentials().getName())) {
+                wantedIdx = i;
+                return wantedIdx;
+            }
+        }
+        return -1;
+    }
+
+    /** This method is created to find easier the current movie
+     * in the database in order to make changes to it */
+    public int findCurrentMovieIdx() {
+        int wantedIdx;
+        for (int i = 0; i < Database.getContent().getMoviesDB().size(); i++) {
+            if (Database.getContent().getMoviesDB().get(i).getName()
+                    .equals(Executable.getExe().getCurrentMovieList().get(0).getName())) {
+                wantedIdx = i;
+                return wantedIdx;
+            }
+        }
+        return -1;
+    }
+
+    /** This method is created to free the database when needed */
+    public void free() {
+        moviesDB.clear();
+        usersDB.clear();
+        actionsDB.clear();
+    }
+}
