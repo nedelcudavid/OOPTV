@@ -8,6 +8,8 @@ import platform.Database;
 import platform.Executable;
 import platform.Movie;
 import pages.authenticated_pages.SeeDetailsPage;
+
+import static actions.on_page_actions.LoginAction.actualiseMovieLists;
 import static platform.Executable.displayOutputForError;
 import static platform.Executable.displayOutputForSuccessfulAction;
 
@@ -28,16 +30,12 @@ public final class RateAction {
 
             if (currentUser.getPurchasedMoviesNames().contains(currentMovieName)) {
                 if (currentUser.getWatchedMoviesNames().contains(currentMovieName)) {
-                    if (!currentUser.getRatedMoviesNames().contains(currentMovieName)) {
                         if (action.getRate() >= MIN_RATING && action.getRate() <= MAX_RATING) {
                             addRateEverywhere(action.getRate());
                             displayOutputForSuccessfulAction(outputNode, outputArray);
                         } else {
                             displayOutputForError(outputNode, outputArray);
                         }
-                    } else {
-                        displayOutputForError(outputNode, outputArray);
-                    }
                 } else {
                     displayOutputForError(outputNode, outputArray);
                 }
@@ -53,65 +51,47 @@ public final class RateAction {
      the current user's rated movie list and adds an error/success node in
      the output array accordingly */
 
-    private static void addRateEverywhere(final int rate) {
+    private static void addRateEverywhere(final int newRating) {
         RegisteredUser currentUser = Executable.getExe().getCurrentUser();
 
         Movie ratedMovie = new Movie(Executable.getExe().getCurrentMovieList().get(0));
+        ratedMovie.addUsersWhoRated(1);
         ratedMovie.addNumRating(1);
-        ratedMovie.addRating(rate);
-        currentUser.getRatedMovies().add(ratedMovie);
-        currentUser.getRatedMoviesNames().add(ratedMovie.getName());
-        /* Adds a rate to the movie and adds it to current player's rated movie list */
+        ratedMovie.addRating(newRating);
+
+        if (currentUser.getRatedMoviesNames().contains(ratedMovie.getName())) {
+            ratedMovie.subNumRating(1);
+            currentUser.getRatedMoviesNames().remove(ratedMovie.getName());
+            int actualiseIdx = 0;
+            for (int i = 0; i < currentUser.getRatedMovies().size(); i++) {
+                if (currentUser.getRatedMovies().get(i).getName().equals(ratedMovie.getName())) {
+                    actualiseIdx = i;
+                }
+            }
+            currentUser.getRatedMovies().set(actualiseIdx, ratedMovie);
+        } else {
+            currentUser.getRatedMovies().add(ratedMovie);
+            currentUser.getRatedMoviesNames().add(ratedMovie.getName());
+            /* Adds a rate to the movie and adds it to current player's rated movie list */
+        }
+
+        Executable.getExe().getCurrentMovieList().set(0, ratedMovie);
+        /* Actualises the movie from the current movie list (adds the new rating to it) */
 
         String movieName = Executable.getExe().getCurrentMovieList().get(0).getName();
-        for (int i = 0; i < currentUser.getPurchasedMovies().size(); i++) {
-            if (currentUser.getPurchasedMovies().get(i).getName().equals(movieName)) {
-                Movie updatedMovie = new Movie(currentUser.getPurchasedMovies().get(i));
-                updatedMovie.addNumRating(1);
-                updatedMovie.addRating(rate);
-                currentUser.getPurchasedMovies().set(i, updatedMovie);
-                break;
-            }
-            /* Actualises the movie from the purchased movie list (adds the new rating to it) */
-        }
-        for (int i = 0; i < currentUser.getWatchedMovies().size(); i++) {
-            if (currentUser.getWatchedMovies().get(i).getName().equals(movieName)) {
-                Movie updatedMovie = new Movie(currentUser.getWatchedMovies().get(i));
-                updatedMovie.addNumRating(1);
-                updatedMovie.addRating(rate);
-                currentUser.getWatchedMovies().set(i, updatedMovie);
-                break;
-            }
-            /* Actualises the movie from the watched movie list (adds the new rating to it) */
-        }
-        for (int i = 0; i < currentUser.getLikedMovies().size(); i++) {
-            if (currentUser.getLikedMovies().get(i).getName().equals(movieName)) {
-                Movie updatedMovie = new Movie(currentUser.getLikedMovies().get(i));
-                updatedMovie.addNumRating(1);
-                updatedMovie.addRating(rate);
-                currentUser.getLikedMovies().set(i, updatedMovie);
-                break;
-            }
-            /* Actualises the movie from the liked movie list (adds the new rating to it) */
-        }
+
+        actualiseMovieLists(currentUser, movieName, ratedMovie);
+
         for (int i = 0; i < currentUser.getAvailableMovies().size(); i++) {
             if (currentUser.getAvailableMovies().get(i).getName().equals(movieName)) {
-                Movie updatedMovie = new Movie(currentUser.getAvailableMovies().get(i));
-                updatedMovie.addNumRating(1);
-                updatedMovie.addRating(rate);
-                currentUser.getAvailableMovies().set(i, updatedMovie);
+                currentUser.getAvailableMovies().set(i, ratedMovie);
                 break;
             }
             /* Actualises the movie from the available movie list (adds the new rating to it) */
         }
-        Movie updatedMovie = new Movie(Executable.getExe().getCurrentMovieList().get(0));
-        updatedMovie.addNumRating(1);
-        updatedMovie.addRating(rate);
-        Executable.getExe().getCurrentMovieList().set(0, updatedMovie);
-        /* Actualises the movie from the current movie list (adds the new rating to it) */
 
         int movieIdx = Database.getContent().findCurrentMovieIdx();
-        Database.getContent().getMoviesDB().set(movieIdx, updatedMovie);
+        Database.getContent().getMoviesDB().set(movieIdx, ratedMovie);
         /* Actualises the movie from the movie database (adds the new rating to it) */
     }
     /* This function executes the rate action itself and

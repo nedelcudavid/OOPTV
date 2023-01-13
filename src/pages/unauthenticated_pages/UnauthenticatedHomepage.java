@@ -36,6 +36,10 @@ public final class UnauthenticatedHomepage extends Page {
             int userIdx = Database.getContent().findCurrentUserIdx();
             Database.getContent().getUsersDB().set(userIdx, updatedUser);
         }
+        if (Executable.getExe().getCurrentUser() != null) {
+            Executable.getExe().getCurrentUser().getVisitedPages().clear();
+            Executable.getExe().getCurrentUser().getVisitedMovies().clear();
+        }
         Executable.getExe().setCurrentUser(null);
         Executable.getExe().getCurrentMovieList().clear();
         Executable.getExe().setCurrentPage(UnauthenticatedHomepage.getPage());

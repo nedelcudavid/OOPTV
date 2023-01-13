@@ -1,5 +1,7 @@
 package input;
 
+import platform.Movie;
+
 public final class InputAction {
     private String type;
     private String page;
@@ -11,9 +13,24 @@ public final class InputAction {
     private String movie;
     private String objectType;
     private int rate;
+    private String subscribedGenre;
+    private InputMovie addedMovie;
+    private String deletedMovie;
+    private Movie entireMovie;
 
     public InputAction() {
 
+    }
+
+    public InputAction(final String type, final String pageName, final Movie entireMovie) {
+        this.type = type;
+        this.page = pageName;
+        this.entireMovie = new Movie(entireMovie);
+    }
+
+    public InputAction(final String type, final String pageName) {
+        this.type = type;
+        this.page = pageName;
     }
 
     public String getType() {
@@ -94,5 +111,37 @@ public final class InputAction {
 
     public void setRate(final int rate) {
         this.rate = rate;
+    }
+
+    public String getSubscribedGenre() {
+        return subscribedGenre;
+    }
+
+    public void setSubscribedGenre(String subscribedGenre) {
+        this.subscribedGenre = subscribedGenre;
+    }
+
+    public InputMovie getAddedMovie() {
+        return addedMovie;
+    }
+
+    public void setAddedMovie(InputMovie addedMovie) {
+        this.addedMovie = addedMovie;
+    }
+
+    public String getDeletedMovie() {
+        return deletedMovie;
+    }
+
+    public void setDeletedMovie(String deletedMovie) {
+        this.deletedMovie = deletedMovie;
+    }
+
+    public Movie getEntireMovie() {
+        return entireMovie;
+    }
+
+    public void setEntireMovie(Movie entireMovie) {
+        this.entireMovie = entireMovie;
     }
 }

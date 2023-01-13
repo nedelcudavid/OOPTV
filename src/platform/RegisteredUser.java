@@ -3,7 +3,11 @@ package platform;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import input.InputCredentials;
 import input.InputUser;
+import pages.Page;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Stack;
 
 /** This class represents the registered user's characteristics */
 public final class RegisteredUser extends InputUser {
@@ -23,6 +27,13 @@ public final class RegisteredUser extends InputUser {
     private ArrayList<String> ratedMoviesNames;
     @JsonIgnore
     private ArrayList<Movie> availableMovies;
+    private ArrayList<Notification> notifications;
+    @JsonIgnore
+    private ArrayList<String> subscribedGenres;
+    @JsonIgnore
+    private Stack<Page> visitedPages;
+    @JsonIgnore
+    private Stack<Movie> visitedMovies;
     private static final int NUM_FREE_PREMIUM_MOVIES = 15;
 
     public RegisteredUser(final InputUser inputUser) {
@@ -38,6 +49,10 @@ public final class RegisteredUser extends InputUser {
         likedMoviesNames = new ArrayList<>();
         ratedMoviesNames = new ArrayList<>();
         availableMovies = new ArrayList<>();
+        notifications = new ArrayList<>();
+        subscribedGenres = new ArrayList<>();
+        visitedPages = new Stack<>();
+        visitedMovies = new Stack<>();
     }
 
     public RegisteredUser(final RegisteredUser copyUser) {
@@ -53,6 +68,12 @@ public final class RegisteredUser extends InputUser {
         likedMoviesNames = new ArrayList<>(copyUser.getLikedMoviesNames());
         ratedMoviesNames = new ArrayList<>(copyUser.getRatedMoviesNames());
         availableMovies = new ArrayList<>(copyUser.getAvailableMovies());
+        notifications = new ArrayList<>(copyUser.getNotifications());
+        subscribedGenres = new ArrayList<>(copyUser.getSubscribedGenres());
+        visitedPages = new Stack<>();
+        visitedPages.addAll(copyUser.getVisitedPages());
+        visitedMovies = new Stack<>();
+        visitedMovies.addAll(copyUser.getVisitedMovies());
     }
 
     public RegisteredUser(final InputCredentials credentials) {
@@ -68,6 +89,10 @@ public final class RegisteredUser extends InputUser {
         likedMoviesNames = new ArrayList<>();
         ratedMoviesNames = new ArrayList<>();
         availableMovies = new ArrayList<>();
+        notifications = new ArrayList<>();
+        subscribedGenres = new ArrayList<>();
+        visitedPages = new Stack<>();
+        visitedMovies = new Stack<>();
     }
 
     public int getTokensCount() {
@@ -142,6 +167,14 @@ public final class RegisteredUser extends InputUser {
         this.ratedMoviesNames = ratedMoviesNames;
     }
 
+    public ArrayList<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(final ArrayList<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
     public ArrayList<Movie> getRatedMovies() {
         return ratedMovies;
     }
@@ -156,6 +189,35 @@ public final class RegisteredUser extends InputUser {
 
     public void setAvailableMovies(final ArrayList<Movie> availableMovies) {
         this.availableMovies = availableMovies;
+    }
+
+    public ArrayList<String> getSubscribedGenres() {
+        return subscribedGenres;
+    }
+
+    public void setSubscribedGenres(final ArrayList<String> subscribedGenres) {
+        this.subscribedGenres = subscribedGenres;
+    }
+
+    public Stack<Page> getVisitedPages() {
+        return visitedPages;
+    }
+
+    public void setVisitedPages(Stack<Page> visitedPages) {
+        this.visitedPages = visitedPages;
+    }
+
+    public Stack<Movie> getVisitedMovies() {
+        return visitedMovies;
+    }
+
+    public void setVisitedMovies(Stack<Movie> visitedMovies) {
+        this.visitedMovies = visitedMovies;
+    }
+
+    /** This method is created to make the addition for numFreePremiumMovies easier */
+    public void addNumFreePremiumMovies(final int addition) {
+        numFreePremiumMovies += addition;
     }
 
     /** This method is created to make the subtraction from numFreePremiumMovies easier */

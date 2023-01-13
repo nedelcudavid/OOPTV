@@ -10,6 +10,9 @@ import pages.Page;
 import pages.unauthenticated_pages.UnauthenticatedHomepage;
 import java.util.ArrayList;
 
+import static actions.BackAction.back;
+import static actions.on_page_actions.SubscribeAction.giveRecommendation;
+
 /** This singleton class represents the execution of the program and holds
  * the current page, movie list and user in real time on the streaming platform */
 public final class Executable {
@@ -70,9 +73,15 @@ public final class Executable {
                         outputNode, outputArray);
                 case "on page" -> OnPageActions.getAction().execute(actions.get(cnt), outputNode,
                         outputArray);
+                case "back" -> back(outputNode, outputArray);
+                case "database" -> Database.getContent().modifyDB(actions.get(cnt), outputNode, outputArray);
                 default -> System.out.println("Error at getting action type!");
             }
         }
+        if (currentUser != null) {
+            giveRecommendation(outputArray);
+        }
+
         UnauthenticatedHomepage.getPage().logout();
         Database.getContent().free();
     }

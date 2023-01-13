@@ -39,23 +39,32 @@ public final class SeeDetailsPage extends Page {
     }
 
     /** The method that sends you to the See Details Page and displays the movie you picked */
-    public void pickMovie(final InputAction action, final ObjectNode outputNode,
+    public void pickMovie(final InputAction inAct, final ObjectNode outputNode,
                           final ArrayNode outputArray) {
         Executable exe = Executable.getExe();
-        boolean checkIfMovieExists = false;
-        for (int i = 0; i < exe.getCurrentMovieList().size(); i++) {
-            if (exe.getCurrentMovieList().get(i).getName().equals(action.getMovie())) {
-                Movie auxMovie = new Movie(exe.getCurrentMovieList().get(i));
-                Executable.getExe().setCurrentPage(SeeDetailsPage.getPage());
-                exe.getCurrentMovieList().clear();
-                exe.getCurrentMovieList().add(auxMovie);
-                checkIfMovieExists = true;
-                displayOutputForSuccessfulAction(outputNode, outputArray);
-                break;
+
+        if (!inAct.getType().equals("back")) {
+            boolean checkIfMovieExists = false;
+            for (int i = 0; i < exe.getCurrentMovieList().size(); i++) {
+                if (exe.getCurrentMovieList().get(i).getName().equals(inAct.getMovie())) {
+                    Movie auxMovie = new Movie(exe.getCurrentMovieList().get(i));
+                    Executable.getExe().setCurrentPage(SeeDetailsPage.getPage());
+                    exe.getCurrentMovieList().clear();
+                    exe.getCurrentMovieList().add(auxMovie);
+                    checkIfMovieExists = true;
+                    displayOutputForSuccessfulAction(outputNode, outputArray);
+                    break;
+                }
             }
-        }
-        if (!checkIfMovieExists) {
-            displayOutputForError(outputNode, outputArray);
+            if (!checkIfMovieExists) {
+                displayOutputForError(outputNode, outputArray);
+            }
+        } else {
+            Movie auxMovie = new Movie(inAct.getEntireMovie());
+            Executable.getExe().setCurrentPage(SeeDetailsPage.getPage());
+            exe.getCurrentMovieList().clear();
+            exe.getCurrentMovieList().add(auxMovie);
+            displayOutputForSuccessfulAction(outputNode, outputArray);
         }
     }
 

@@ -12,6 +12,7 @@ import static actions.on_page_actions.PurchaseAction.purchase;
 import static actions.on_page_actions.RateAction.rate;
 import static actions.on_page_actions.RegisterAction.register;
 import static actions.on_page_actions.SearchAction.search;
+import static actions.on_page_actions.SubscribeAction.subscribe;
 import static actions.on_page_actions.WatchAction.watch;
 
 /** This singleton class holds all the 'on page' actions */
@@ -43,6 +44,7 @@ public final class OnPageActions {
             case "watch" -> watch(outputNode, outputArray);
             case "like" -> like(outputNode, outputArray);
             case "rate" -> rate(inputAction, outputNode, outputArray);
+            case "subscribe" -> subscribe(inputAction, outputNode, outputArray);
             default -> System.out.println("There are actions to implement remaining!");
         }
     }

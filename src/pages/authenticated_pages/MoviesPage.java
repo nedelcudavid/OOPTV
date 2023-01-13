@@ -2,6 +2,7 @@ package pages.authenticated_pages;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import platform.Database;
 import platform.Executable;
 import platform.Movie;
 import platform.RegisteredUser;
@@ -38,9 +39,12 @@ public final class MoviesPage extends Page {
 
     /** The method that sends you to the Movies Page and displays all available movies */
     public void showMovies(final ObjectNode outputNode, final ArrayNode outputArray) {
-        RegisteredUser currentUser = Executable.getExe().getCurrentUser();
         Executable.getExe().setCurrentPage(MoviesPage.getPage());
-        ArrayList<Movie> availableMovies = new ArrayList<>(currentUser.getAvailableMovies());
+
+        ArrayList<Movie> availableMovies = new ArrayList<>(Database.getContent().getMoviesDB());
+        String userCountry = Executable.getExe().getCurrentUser().getCredentials().getCountry();
+        availableMovies.removeIf(movie -> (movie.getCountriesBanned().contains(userCountry)));
+
         Executable.getExe().setCurrentMovieList(availableMovies);
         displayOutputForSuccessfulAction(outputNode, outputArray);
     }

@@ -1,7 +1,11 @@
 package platform;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import input.InputAction;
+import input.InputMovie;
 import java.util.ArrayList;
+import static platform.Executable.displayOutputForError;
 
 /** This singleton class represents a database that holds all movies, users and actions */
 public final class Database {
@@ -75,6 +79,114 @@ public final class Database {
             }
         }
         return -1;
+    }
+
+    public void modifyDB(final InputAction inputAction, final ObjectNode outputNode,
+                               final ArrayNode outputArray) {
+        switch (inputAction.getFeature()) {
+            case "add" -> addMovie(inputAction.getAddedMovie(), outputNode, outputArray);
+            case "delete" -> deleteMovie(inputAction.getDeletedMovie(), outputNode, outputArray);
+            default -> System.out.println("Error at adding/removing movies command!");
+        }
+    }
+
+    private void addMovie(final InputMovie addedMovie, final ObjectNode outputNode,
+                          final ArrayNode outputArray) {
+        Movie movieToAdd = new Movie(addedMovie);
+
+        boolean movieAlreadyExists = false;
+        for (Movie movie : moviesDB) {
+            if (movie.getName().equals(movieToAdd.getName())) {
+                movieAlreadyExists = true;
+            }
+        }
+
+        if (movieAlreadyExists) {
+            displayOutputForError(outputNode, outputArray);
+        } else {
+            moviesDB.add(movieToAdd);
+            Notification notificationToAdd = new Notification(movieToAdd.getName(), "ADD");
+            for (RegisteredUser user : usersDB) {
+                if (containsAny(user.getSubscribedGenres(), movieToAdd.getGenres()) &&
+                        !movieToAdd.getCountriesBanned().contains(user.getCredentials().getCountry())) {
+                    user.getNotifications().add(notificationToAdd);
+                    RegisteredUser currentUser = Executable.getExe().getCurrentUser();
+                    if (currentUser.getCredentials().getName().equals(user.getCredentials().getName())) {
+                        currentUser.getNotifications().add(notificationToAdd);
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean containsAny(ArrayList<String> l1, ArrayList<String> l2) {
+        for (String elem : l1) {
+            if (l2.contains(elem)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void deleteMovie(final String deletedMovie, final ObjectNode outputNode,
+                             final ArrayNode outputArray) {
+        boolean movieExists = false;
+        for (Movie movie : moviesDB) {
+            if (movie.getName().equals(deletedMovie)) {
+                movieExists = true;
+            }
+        }
+
+        if (movieExists) {
+            for (int i = 0; i < moviesDB.size(); i++) {
+                if (moviesDB.get(i).getName().equals(deletedMovie)) {
+                    moviesDB.remove(i);
+                    break;
+                }
+            }
+            Notification notificationToAdd = new Notification(deletedMovie, "DELETE");
+            for (RegisteredUser user : usersDB) {
+                if (user.getPurchasedMoviesNames().contains(deletedMovie)) {
+                    for (int i = 0; i < user.getPurchasedMovies().size(); i++) {
+                        if (user.getPurchasedMovies().get(i).getName().equals(deletedMovie)) {
+                            user.getPurchasedMovies().remove(i);
+                            break;
+                        }
+                    }
+
+                    for (int i = 0; i < user.getWatchedMovies().size(); i++) {
+                        if (user.getWatchedMovies().get(i).getName().equals(deletedMovie)) {
+                            user.getWatchedMovies().remove(i);
+                            break;
+                        }
+                    }
+
+                    for (int i = 0; i < user.getLikedMovies().size(); i++) {
+                        if (user.getLikedMovies().get(i).getName().equals(deletedMovie)) {
+                            user.getLikedMovies().remove(i);
+                            break;
+                        }
+                    }
+
+                    for (int i = 0; i < user.getRatedMovies().size(); i++) {
+                        if (user.getRatedMovies().get(i).getName().equals(deletedMovie)) {
+                            user.getRatedMovies().remove(i);
+                            break;
+                        }
+                    }
+
+                    if (user.getCredentials().getAccountType().equals("premium")) {
+                        user.addNumFreePremiumMovies(1);
+                    } else {
+                        user.addTokensCount(2);
+                    }
+
+                    user.getNotifications().add(notificationToAdd);
+                }
+            }
+        } else {
+            displayOutputForError(outputNode, outputArray);
+        }
     }
 
     /** This method is created to free the database when needed */

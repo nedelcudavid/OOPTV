@@ -33,6 +33,7 @@ public final class AuthenticatedHomepage extends Page {
     /** The method that sends you to the Authenticated Homepage */
     public void enterAuthenticatedHomepage() {
         Executable.getExe().setCurrentPage(AuthenticatedHomepage.getPage());
+        Executable.getExe().getCurrentMovieList().clear();
     }
 
     @Override

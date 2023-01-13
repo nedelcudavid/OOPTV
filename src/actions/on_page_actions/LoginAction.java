@@ -52,27 +52,8 @@ public final class LoginAction {
             String movieName = Database.getContent().getMoviesDB().get(idx).getName();
             Movie actualisedMovie = new Movie(Database.getContent().getMoviesDB().get(idx));
 
-            for (int i = 0; i < currentUser.getPurchasedMovies().size(); i++) {
-                if (currentUser.getPurchasedMovies().get(i).getName().equals(movieName)) {
-                    currentUser.getPurchasedMovies().set(i, actualisedMovie);
-                    break;
-                }
-                /* Actualises the movies from the purchased movie list with info from database*/
-            }
-            for (int i = 0; i < currentUser.getWatchedMovies().size(); i++) {
-                if (currentUser.getWatchedMovies().get(i).getName().equals(movieName)) {
-                    currentUser.getWatchedMovies().set(i, actualisedMovie);
-                    break;
-                }
-                /* Actualises the movie from the watched movie list with info from database*/
-            }
-            for (int i = 0; i < currentUser.getLikedMovies().size(); i++) {
-                if (currentUser.getLikedMovies().get(i).getName().equals(movieName)) {
-                    currentUser.getLikedMovies().set(i, actualisedMovie);
-                    break;
-                }
-                /* Actualises the movie from the rated movie list with info from database*/
-            }
+            actualiseMovieLists(currentUser, movieName, actualisedMovie);
+
             for (int i = 0; i < currentUser.getRatedMovies().size(); i++) {
                 if (currentUser.getRatedMovies().get(i).getName().equals(movieName)) {
                     currentUser.getRatedMovies().set(i, actualisedMovie);
@@ -80,6 +61,30 @@ public final class LoginAction {
                 }
                 /* Actualises the movie from the rated movie list with info from database*/
             }
+        }
+    }
+
+    static void actualiseMovieLists(RegisteredUser currentUser, String movieName, Movie actualisedMovie) {
+        for (int i = 0; i < currentUser.getPurchasedMovies().size(); i++) {
+            if (currentUser.getPurchasedMovies().get(i).getName().equals(movieName)) {
+                currentUser.getPurchasedMovies().set(i, actualisedMovie);
+                break;
+            }
+            /* Actualises the movies from the purchased movie list with info from database*/
+        }
+        for (int i = 0; i < currentUser.getWatchedMovies().size(); i++) {
+            if (currentUser.getWatchedMovies().get(i).getName().equals(movieName)) {
+                currentUser.getWatchedMovies().set(i, actualisedMovie);
+                break;
+            }
+            /* Actualises the movie from the watched movie list with info from database*/
+        }
+        for (int i = 0; i < currentUser.getLikedMovies().size(); i++) {
+            if (currentUser.getLikedMovies().get(i).getName().equals(movieName)) {
+                currentUser.getLikedMovies().set(i, actualisedMovie);
+                break;
+            }
+            /* Actualises the movie from the rated movie list with info from database*/
         }
     }
     /* Function that actualises the movies from the current user's list with info from database*/

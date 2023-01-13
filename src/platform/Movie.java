@@ -11,7 +11,9 @@ public final class Movie extends InputMovie {
     private double rating;
     private int numRatings;
     @JsonIgnore
-    private final ArrayList<Integer> allRatings;
+    private int numUsersWhoRated;
+    @JsonIgnore
+    private int sumRatings;
     @JsonIgnore
     private static final DecimalFormat DF = new DecimalFormat("0.00");
 
@@ -20,7 +22,8 @@ public final class Movie extends InputMovie {
         numLikes = 0;
         rating = 0;
         numRatings = 0;
-        allRatings = new ArrayList<>();
+        sumRatings = 0;
+        numUsersWhoRated = 0;
     }
 
     public Movie(final Movie copyMovie) {
@@ -28,7 +31,8 @@ public final class Movie extends InputMovie {
         numLikes = copyMovie.getNumLikes();
         rating = copyMovie.getRating();
         numRatings = copyMovie.getNumRatings();
-        allRatings = new ArrayList<>(copyMovie.getAllRatings());
+        sumRatings = copyMovie.getSumRatings();
+        numUsersWhoRated = copyMovie.getNumUsersWhoRated();
     }
 
     public int getNumLikes() {
@@ -55,8 +59,20 @@ public final class Movie extends InputMovie {
         this.numRatings = numRatings;
     }
 
-    public ArrayList<Integer> getAllRatings() {
-        return allRatings;
+    public int getSumRatings() {
+        return sumRatings;
+    }
+
+    public void setSumRatings(int sumRatings) {
+        this.sumRatings = sumRatings;
+    }
+
+    public int getNumUsersWhoRated() {
+        return numUsersWhoRated;
+    }
+
+    public void setNumUsersWhoRated(int numUsersWhoRatedThis) {
+        this.numUsersWhoRated = numUsersWhoRatedThis;
     }
 
     /** This method is created to make the addition to numLikes easier */
@@ -69,14 +85,18 @@ public final class Movie extends InputMovie {
         this.numRatings += addition;
     }
 
+    public void subNumRating(final int subtraction) {
+        this.numRatings -= subtraction;
+    }
+
+    public void addUsersWhoRated(final int addition) {
+        this.numUsersWhoRated += addition;
+    }
+
     /** This method is created to rate a movie and calculate the new rating easier */
     public void addRating(final int newRating) {
-        allRatings.add(newRating);
-        int ratingsSum = 0;
-        for (Integer allRating : allRatings) {
-            ratingsSum += allRating;
-        }
-        double freshRating = (double) ratingsSum / numRatings;
+        sumRatings += newRating;
+        double freshRating = (double) sumRatings / numUsersWhoRated;
         String formattedString = DF.format(freshRating);
         rating = Double.parseDouble(formattedString);
     }
