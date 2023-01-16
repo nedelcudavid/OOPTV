@@ -4,14 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import input.InputAction;
-import pages.authenticated_pages.MoviesPage;
 import pages.authenticated_pages.SeeDetailsPage;
 import platform.*;
+import platform.notifications_system.Notification;
+import platform.notifications_system.NotificationsFactory;
+import platform.notifications_system.RecommendationNotification;
 
 import java.util.*;
 
 import static platform.Executable.displayOutputForError;
-import static platform.Executable.displayOutputForSuccessfulAction;
 
 /** This utility class executes the 'search' action */
 public final class SubscribeAction {
@@ -119,18 +120,18 @@ public final class SubscribeAction {
                         break;
                     }
                 }
-
-                Notification notificationToAdd = new Notification(recommendationName, "Recommendation");
-                addRecommendationNotification(outputArray, currentUser, notificationToAdd);
+                addRecommendationNotification(outputArray, currentUser, recommendationName);
             } else {
-                Notification notificationToAdd = new Notification("No recommendation", "Recommendation");
-                addRecommendationNotification(outputArray, currentUser, notificationToAdd);
+                addRecommendationNotification(outputArray, currentUser, "No recommendation");
             }
         }
     }
 
-    private static void addRecommendationNotification(ArrayNode outputArray, RegisteredUser currentUser, Notification notificationToAdd) {
-        currentUser.getNotifications().add(notificationToAdd);
+    private static void addRecommendationNotification(ArrayNode outputArray, RegisteredUser currentUser, String message) {
+        NotificationsFactory notificationsFactory = new NotificationsFactory();
+        Notification notificationToAdd = notificationsFactory.createNotification("Recommendation", message);
+
+        notificationToAdd.addNotificationToUser(currentUser);
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode outputNode = objectMapper.createObjectNode();
         outputNode.put("error", (String) null);

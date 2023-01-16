@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import input.InputCredentials;
 import input.InputUser;
 import pages.Page;
+import platform.notifications_system.Notification;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Stack;
 
 /** This class represents the registered user's characteristics */

@@ -4,6 +4,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import input.InputAction;
 import input.InputMovie;
+import platform.notifications_system.AddMovieNotification;
+import platform.notifications_system.DeleteMovieNotification;
+import platform.notifications_system.Notification;
+import platform.notifications_system.NotificationsFactory;
+
 import java.util.ArrayList;
 import static platform.Executable.displayOutputForError;
 
@@ -95,7 +100,7 @@ public final class Database {
         Movie movieToAdd = new Movie(addedMovie);
 
         boolean movieAlreadyExists = false;
-        for (Movie movie : moviesDB) {
+        for (Movie movie : getMoviesDB()) {
             if (movie.getName().equals(movieToAdd.getName())) {
                 movieAlreadyExists = true;
             }
@@ -104,15 +109,17 @@ public final class Database {
         if (movieAlreadyExists) {
             displayOutputForError(outputNode, outputArray);
         } else {
-            moviesDB.add(movieToAdd);
-            Notification notificationToAdd = new Notification(movieToAdd.getName(), "ADD");
-            for (RegisteredUser user : usersDB) {
+            NotificationsFactory notificationsFactory = new NotificationsFactory();
+            Notification notificationToAdd = notificationsFactory.createNotification("ADD", movieToAdd.getName());
+
+            getMoviesDB().add(movieToAdd);
+            for (RegisteredUser user : getUsersDB()) {
                 if (containsAny(user.getSubscribedGenres(), movieToAdd.getGenres()) &&
                         !movieToAdd.getCountriesBanned().contains(user.getCredentials().getCountry())) {
-                    user.getNotifications().add(notificationToAdd);
+                    notificationToAdd.addNotificationToUser(user);
                     RegisteredUser currentUser = Executable.getExe().getCurrentUser();
                     if (currentUser.getCredentials().getName().equals(user.getCredentials().getName())) {
-                        currentUser.getNotifications().add(notificationToAdd);
+                        notificationToAdd.addNotificationToUser(currentUser);
                     }
                 }
             }
@@ -144,7 +151,10 @@ public final class Database {
                     break;
                 }
             }
-            Notification notificationToAdd = new Notification(deletedMovie, "DELETE");
+
+            NotificationsFactory notificationsFactory = new NotificationsFactory();
+            Notification notificationToAdd = notificationsFactory.createNotification("DELETE", deletedMovie);
+
             for (RegisteredUser user : usersDB) {
                 if (user.getPurchasedMoviesNames().contains(deletedMovie)) {
                     for (int i = 0; i < user.getPurchasedMovies().size(); i++) {
@@ -180,8 +190,7 @@ public final class Database {
                     } else {
                         user.addTokensCount(2);
                     }
-
-                    user.getNotifications().add(notificationToAdd);
+                    notificationToAdd.addNotificationToUser(user);
                 }
             }
         } else {
