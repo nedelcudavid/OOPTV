@@ -35,6 +35,10 @@ public final class Movie extends InputMovie {
         numUsersWhoRated = copyMovie.getNumUsersWhoRated();
     }
 
+    public Movie(final String title) {
+        super(title);
+    }
+
     public int getNumLikes() {
         return numLikes;
     }

@@ -64,7 +64,9 @@ public final class LoginAction {
         }
     }
 
-    static void actualiseMovieLists(RegisteredUser currentUser, String movieName, Movie actualisedMovie) {
+    /** Function that actualises the movies from the current user's list with info from database*/
+    static void actualiseMovieLists(final RegisteredUser currentUser, final String movieName,
+                                    final Movie actualisedMovie) {
         for (int i = 0; i < currentUser.getPurchasedMovies().size(); i++) {
             if (currentUser.getPurchasedMovies().get(i).getName().equals(movieName)) {
                 currentUser.getPurchasedMovies().set(i, actualisedMovie);
@@ -87,7 +89,6 @@ public final class LoginAction {
             /* Actualises the movie from the rated movie list with info from database*/
         }
     }
-    /* Function that actualises the movies from the current user's list with info from database*/
 
     /** This function represents the action of entering an account
     Here we set the current user, get the available movie list for him depending on his country and

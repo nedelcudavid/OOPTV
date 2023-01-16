@@ -12,7 +12,7 @@ import platform.RegisteredUser;
 import static platform.Executable.displayOutputForError;
 
 /** This utility class executes the 'back' action */
-public class BackAction {
+public final class BackAction {
 
     private BackAction() {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");

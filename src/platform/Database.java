@@ -4,10 +4,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import input.InputAction;
 import input.InputMovie;
-import platform.notifications_system.AddMovieNotification;
-import platform.notifications_system.DeleteMovieNotification;
-import platform.notifications_system.Notification;
-import platform.notifications_system.NotificationsFactory;
+import platform.changing_database_system.AddMovieObserver;
+import platform.changing_database_system.DatabaseChange;
+import platform.changing_database_system.DeleteMovieObserver;
 
 import java.util.ArrayList;
 import static platform.Executable.displayOutputForError;
@@ -15,15 +14,19 @@ import static platform.Executable.displayOutputForError;
 /** This singleton class represents a database that holds all movies, users and actions */
 public final class Database {
 
-    private ArrayList<Movie> moviesDB;
-    private ArrayList<RegisteredUser> usersDB;
+    private final ArrayList<Movie> moviesDB;
+    private final ArrayList<RegisteredUser> usersDB;
     private ArrayList<InputAction> actionsDB;
+    private final DatabaseChange databaseChange;
     private static Database content = null;
 
     private Database() {
         moviesDB = new ArrayList<>();
         usersDB = new ArrayList<>();
         actionsDB = new ArrayList<>();
+        databaseChange = new DatabaseChange();
+        new AddMovieObserver(databaseChange);
+        new DeleteMovieObserver(databaseChange);
     }
 
     /** Singleton implementation */
@@ -38,20 +41,16 @@ public final class Database {
         return moviesDB;
     }
 
-    public void setMoviesDB(final ArrayList<Movie> moviesDB) {
-        this.moviesDB = moviesDB;
-    }
-
     public ArrayList<RegisteredUser> getUsersDB() {
         return usersDB;
     }
 
-    public void setUsersDB(final ArrayList<RegisteredUser> usersDB) {
-        this.usersDB = usersDB;
-    }
-
     public ArrayList<InputAction> getActionsDB() {
         return actionsDB;
+    }
+
+    public DatabaseChange getDatabaseChange() {
+        return databaseChange;
     }
 
     public void setActionsDB(final ArrayList<InputAction> actionsDB) {
@@ -109,30 +108,8 @@ public final class Database {
         if (movieAlreadyExists) {
             displayOutputForError(outputNode, outputArray);
         } else {
-            NotificationsFactory notificationsFactory = new NotificationsFactory();
-            Notification notificationToAdd = notificationsFactory.createNotification("ADD", movieToAdd.getName());
-
-            getMoviesDB().add(movieToAdd);
-            for (RegisteredUser user : getUsersDB()) {
-                if (containsAny(user.getSubscribedGenres(), movieToAdd.getGenres()) &&
-                        !movieToAdd.getCountriesBanned().contains(user.getCredentials().getCountry())) {
-                    notificationToAdd.addNotificationToUser(user);
-                    RegisteredUser currentUser = Executable.getExe().getCurrentUser();
-                    if (currentUser.getCredentials().getName().equals(user.getCredentials().getName())) {
-                        notificationToAdd.addNotificationToUser(currentUser);
-                    }
-                }
-            }
+            getDatabaseChange().databaseChangeIsMade("ADD", movieToAdd);
         }
-    }
-
-    private static boolean containsAny(ArrayList<String> l1, ArrayList<String> l2) {
-        for (String elem : l1) {
-            if (l2.contains(elem)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void deleteMovie(final String deletedMovie, final ObjectNode outputNode,
@@ -145,54 +122,8 @@ public final class Database {
         }
 
         if (movieExists) {
-            for (int i = 0; i < moviesDB.size(); i++) {
-                if (moviesDB.get(i).getName().equals(deletedMovie)) {
-                    moviesDB.remove(i);
-                    break;
-                }
-            }
-
-            NotificationsFactory notificationsFactory = new NotificationsFactory();
-            Notification notificationToAdd = notificationsFactory.createNotification("DELETE", deletedMovie);
-
-            for (RegisteredUser user : usersDB) {
-                if (user.getPurchasedMoviesNames().contains(deletedMovie)) {
-                    for (int i = 0; i < user.getPurchasedMovies().size(); i++) {
-                        if (user.getPurchasedMovies().get(i).getName().equals(deletedMovie)) {
-                            user.getPurchasedMovies().remove(i);
-                            break;
-                        }
-                    }
-
-                    for (int i = 0; i < user.getWatchedMovies().size(); i++) {
-                        if (user.getWatchedMovies().get(i).getName().equals(deletedMovie)) {
-                            user.getWatchedMovies().remove(i);
-                            break;
-                        }
-                    }
-
-                    for (int i = 0; i < user.getLikedMovies().size(); i++) {
-                        if (user.getLikedMovies().get(i).getName().equals(deletedMovie)) {
-                            user.getLikedMovies().remove(i);
-                            break;
-                        }
-                    }
-
-                    for (int i = 0; i < user.getRatedMovies().size(); i++) {
-                        if (user.getRatedMovies().get(i).getName().equals(deletedMovie)) {
-                            user.getRatedMovies().remove(i);
-                            break;
-                        }
-                    }
-
-                    if (user.getCredentials().getAccountType().equals("premium")) {
-                        user.addNumFreePremiumMovies(1);
-                    } else {
-                        user.addTokensCount(2);
-                    }
-                    notificationToAdd.addNotificationToUser(user);
-                }
-            }
+            Movie movieToDelete = new Movie(deletedMovie);
+            getDatabaseChange().databaseChangeIsMade("DELETE", movieToDelete);
         } else {
             displayOutputForError(outputNode, outputArray);
         }

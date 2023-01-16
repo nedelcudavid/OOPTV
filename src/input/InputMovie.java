@@ -21,6 +21,10 @@ public class InputMovie {
         countriesBanned = inputMovie.getCountriesBanned();
     }
 
+    public InputMovie(final String title) {
+        name = title;
+    }
+
     public final String getName() {
         return name;
     }

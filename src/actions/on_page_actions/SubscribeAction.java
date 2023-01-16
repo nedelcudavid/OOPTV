@@ -5,12 +5,21 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import input.InputAction;
 import pages.authenticated_pages.SeeDetailsPage;
-import platform.*;
+import platform.Database;
+import platform.Executable;
+import platform.Movie;
+import platform.RegisteredUser;
 import platform.notifications_system.Notification;
 import platform.notifications_system.NotificationsFactory;
-import platform.notifications_system.RecommendationNotification;
 
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.Set;
+import java.util.Comparator;
 
 import static platform.Executable.displayOutputForError;
 
@@ -24,16 +33,19 @@ public final class SubscribeAction {
     /** This function verifies if the conditions for this action are met,
      if they are it adds one of the current movie's genres to the current user's
      subscribedGenres list and adds an error/success node in the output array in necessary */
-    static void subscribe(final InputAction action, final ObjectNode outputNode, final ArrayNode outputArray) {
+    static void subscribe(final InputAction action, final ObjectNode outputNode,
+                          final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentPage().equals(SeeDetailsPage.getPage())) {
             if (Executable.getExe().getCurrentUser() != null) {
                 RegisteredUser currentUser = Executable.getExe().getCurrentUser();
 
-                if (Executable.getExe().getCurrentMovieList().get(0).getGenres().contains(action.getSubscribedGenre())) {
+                if (Executable.getExe().getCurrentMovieList().get(0).getGenres()
+                        .contains(action.getSubscribedGenre())) {
                     if (!currentUser.getSubscribedGenres().contains(action.getSubscribedGenre())) {
                         currentUser.getSubscribedGenres().add(action.getSubscribedGenre());
                         int userIdx = Database.getContent().findCurrentUserIdx();
-                        Database.getContent().getUsersDB().get(userIdx).getSubscribedGenres().add(action.getSubscribedGenre());
+                        Database.getContent().getUsersDB().get(userIdx)
+                                .getSubscribedGenres().add(action.getSubscribedGenre());
                     } else {
                         displayOutputForError(outputNode, outputArray);
                     }
@@ -52,7 +64,8 @@ public final class SubscribeAction {
      if they are it adds a recommendation notification to the current user's
      notifications list */
     public static void giveRecommendation(final ArrayNode outputArray) {
-        if (Executable.getExe().getCurrentUser().getCredentials().getAccountType().equals("premium")) {
+        if (Executable.getExe().getCurrentUser()
+                .getCredentials().getAccountType().equals("premium")) {
             ArrayList<String> allGenres = new ArrayList<>();
             for (Movie movie : Database.getContent().getMoviesDB()) {
                 for (String genre : movie.getGenres()) {
@@ -68,7 +81,7 @@ public final class SubscribeAction {
             for (String genre : allGenres) {
                 int genreLikes = 0;
                 for (Movie likedMovie : currentUser.getLikedMovies()) {
-                    if (likedMovie.getGenres().contains(genre)){
+                    if (likedMovie.getGenres().contains(genre)) {
                         genreLikes++;
                     }
                 }
@@ -87,16 +100,19 @@ public final class SubscribeAction {
                 List<Map.Entry<String, Integer>> listOfEntries = new ArrayList<>(entries);
                 listOfEntries.sort(valueComparator);
                 ArrayList<String> genresSortedByValue = new ArrayList<>(listOfEntries.size());
-                for (int i = listOfEntries.size() - 1; i >=0; i--) {
+                for (int i = listOfEntries.size() - 1; i >= 0; i--) {
                     genresSortedByValue.add(listOfEntries.get(i).getKey());
                 }
 
                 String recommendationName = "No recommendation";
 
                 for (String genre : genresSortedByValue) {
-                    ArrayList<Movie> availableMovies = new ArrayList<>(Database.getContent().getMoviesDB());
-                    String userCountry = Executable.getExe().getCurrentUser().getCredentials().getCountry();
-                    availableMovies.removeIf(movie -> (movie.getCountriesBanned().contains(userCountry)));
+                    ArrayList<Movie> availableMovies =
+                            new ArrayList<>(Database.getContent().getMoviesDB());
+                    String userCountry =
+                            Executable.getExe().getCurrentUser().getCredentials().getCountry();
+                    availableMovies.removeIf(movie ->
+                            (movie.getCountriesBanned().contains(userCountry)));
 
                     ArrayList<Movie> moviesSortedByLikes = new ArrayList<>();
                     while (availableMovies.size() > 0) {
@@ -133,9 +149,13 @@ public final class SubscribeAction {
         }
     }
 
-    private static void addRecommendationNotification(ArrayNode outputArray, RegisteredUser currentUser, String message) {
+    /** This function adds a recommendation notification to the user's notifications list */
+    private static void addRecommendationNotification(final ArrayNode outputArray,
+                                                      final RegisteredUser currentUser,
+                                                      final String message) {
         NotificationsFactory notificationsFactory = new NotificationsFactory();
-        Notification notificationToAdd = notificationsFactory.createNotification("Recommendation", message);
+        Notification notificationToAdd =
+                notificationsFactory.createNotification("Recommendation", message);
 
         notificationToAdd.addNotificationToUser(currentUser);
         ObjectMapper objectMapper = new ObjectMapper();

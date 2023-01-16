@@ -15,7 +15,6 @@ import pages.unauthenticated_pages.UnauthenticatedHomepage;
 import platform.Movie;
 
 import static platform.Executable.displayOutputForError;
-import static platform.Executable.displayOutputForSuccessfulAction;
 
 /** This singleton class holds all the 'change page' actions */
 public final class ChangePageActions {
@@ -40,23 +39,25 @@ public final class ChangePageActions {
 
         if (currentPage.validPagesToVisitFromHere().contains(inAct.getPage())) {
 
-            if (Executable.getExe().getCurrentUser() != null && !inAct.getPage().equals("logout")) {
+            if (Executable.getExe().getCurrentUser() != null
+                    && !inAct.getPage().equals("logout")) {
                 if (!inAct.getType().equals("back")) {
+                    Executable exe = Executable.getExe();
                     if (currentPage.equals(SeeDetailsPage.getPage())) {
                         Executable.getExe().getCurrentUser().getVisitedPages().push(currentPage);
-                        Movie auxMovie = new Movie(Executable.getExe().getCurrentMovieList().get(0));
+                        Movie auxMovie = new Movie(exe.getCurrentMovieList().get(0));
                         Executable.getExe().getCurrentUser().getVisitedMovies().push(auxMovie);
                     } else {
                         if (inAct.getPage().equals("see details")) {
-                            Executable exe = Executable.getExe();
                             for (int i = 0; i < exe.getCurrentMovieList().size(); i++) {
-                                if (exe.getCurrentMovieList().get(i).getName().equals(inAct.getMovie())) {
-                                    Executable.getExe().getCurrentUser().getVisitedPages().push(currentPage);
+                                if (exe.getCurrentMovieList().get(i).getName()
+                                        .equals(inAct.getMovie())) {
+                                    exe.getCurrentUser().getVisitedPages().push(currentPage);
                                     break;
                                 }
                             }
                         } else {
-                            Executable.getExe().getCurrentUser().getVisitedPages().push(currentPage);
+                            exe.getCurrentUser().getVisitedPages().push(currentPage);
                         }
                     }
                 }
@@ -66,7 +67,8 @@ public final class ChangePageActions {
                 case "see details" -> SeeDetailsPage.getPage().pickMovie(inAct, outNode, outArray);
                 case "movies" -> MoviesPage.getPage().showMovies(outNode, outArray);
                 case "upgrades" -> UpgradesPage.getPage().enterUpgradesPage();
-                case "authenticated homepage" -> AuthenticatedHomepage.getPage().enterAuthenticatedHomepage();
+                case "authenticated homepage" ->
+                        AuthenticatedHomepage.getPage().enterAuthenticatedHomepage();
                 case "logout" -> UnauthenticatedHomepage.getPage().logout();
                 case "login" -> LoginPage.getPage().enterLoginPage();
                 case "register" -> RegisterPage.getPage().enterRegisterPage();
