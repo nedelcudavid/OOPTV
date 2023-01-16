@@ -18,6 +18,8 @@ public class BackAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function provides the 'back' functionality and allows
+     *  the user to go back one page if the conditions are met */
     public static void back(final ObjectNode outputNode, final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentUser() != null) {
             RegisteredUser currentUser = Executable.getExe().getCurrentUser();

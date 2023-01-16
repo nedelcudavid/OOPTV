@@ -18,6 +18,8 @@ public final class FilterAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for this action are met
+     and adds an error/success node in the output array accordingly */
     static void filter(final InputAction action, final ObjectNode outputNode,
                        final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentPage().equals(MoviesPage.getPage())) {
@@ -32,9 +34,8 @@ public final class FilterAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the conditions for this action are met
-     and adds an error/success node in the output array accordingly */
 
+    /** This function sorts the movie list by rating and/or duration if is necessary */
     private static void sort(final InputAction action) {
         ArrayList<Movie> currentMovieList = Executable.getExe().getCurrentMovieList();
         if (action.getFilters().getSort() != null) {
@@ -54,8 +55,8 @@ public final class FilterAction {
             }
         }
     }
-    /* This function sorts the movie list by rating and/or duration if is necessary */
 
+    /** This function filters the movie list by actors and/or genre  if is necessary */
     private static void contains(final InputAction action) {
         ArrayList<Movie> currentMovieList = Executable.getExe().getCurrentMovieList();
         if (action.getFilters().getContains() != null) {
@@ -73,5 +74,4 @@ public final class FilterAction {
             }
         }
     }
-    /* This function filters the movie list by actors and/or genre  if is necessary */
 }

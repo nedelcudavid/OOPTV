@@ -21,6 +21,9 @@ public final class LoginAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the credentials of the user match with the ones of any user
+    from the database and enters the account only if the user exists, it also adds
+    an error/success node in the output array accordingly */
     static void login(final InputAction action, final ObjectNode outputNode,
                       final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentPage().equals(LoginPage.getPage())) {
@@ -43,9 +46,6 @@ public final class LoginAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the credentials of the user match with the ones of any user
-    from the database and enters the account only if the user exists, it also adds
-    an error/success node in the output array accordingly */
 
     static void actualiseInfo(final RegisteredUser currentUser) {
         for (int idx = 0; idx < Database.getContent().getMoviesDB().size(); idx++) {
@@ -89,6 +89,12 @@ public final class LoginAction {
     }
     /* Function that actualises the movies from the current user's list with info from database*/
 
+    /** This function represents the action of entering an account
+    Here we set the current user, get the available movie list for him depending on his country and
+     actualise the movies he has in his lists (purchased, watched, liked, rated) with the info from
+     the database (we do this because if other user liked or rated a movie, the current user should
+     have his lists actualised)
+     */
     static void enterAccount(final ObjectNode outNode, final ArrayNode outArray, final int i) {
         Executable.getExe().setCurrentPage(AuthenticatedHomepage.getPage());
 
@@ -103,10 +109,4 @@ public final class LoginAction {
 
         displayOutputForSuccessfulAction(outNode, outArray);
     }
-    /* This function represents the action of entering an account
-    Here we set the current user, get the available movie list for him depending on his country and
-     actualise the movies he has in his lists (purchased, watched, liked, rated) with the info from
-     the database (we do this because if other user liked or rated a movie, the current user should
-     have his lists actualised)
-     */
 }

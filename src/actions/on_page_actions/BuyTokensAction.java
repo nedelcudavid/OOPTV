@@ -14,6 +14,8 @@ public final class BuyTokensAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for this action are met
+     and adds an error/success node in the output array accordingly */
     static void buyTokens(final InputAction action, final ObjectNode outputNode,
                           final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentPage().equals(UpgradesPage.getPage())) {
@@ -31,6 +33,4 @@ public final class BuyTokensAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the conditions for this action are met
-     and adds an error/success node in the output array accordingly */
 }

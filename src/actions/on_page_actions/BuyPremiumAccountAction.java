@@ -15,6 +15,8 @@ public final class BuyPremiumAccountAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for this action are met
+     and adds an error/success node in the output array accordingly */
     static void buyPremiumAccount(final ObjectNode outputNode, final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentPage().equals(UpgradesPage.getPage())) {
             int tokensCount = Executable.getExe().getCurrentUser().getTokensCount();
@@ -31,6 +33,4 @@ public final class BuyPremiumAccountAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the conditions for this action are met
-     and adds an error/success node in the output array accordingly */
 }

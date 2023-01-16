@@ -30,7 +30,8 @@ public final class OnPageActions {
         return action;
     }
 
-    /** This function executes any 'on page' action */
+
+    /** This function executes any 'on page' action it is called if it exists */
     public void execute(final InputAction inputAction, final ObjectNode outputNode,
                         final ArrayNode outputArray) {
         switch (inputAction.getFeature()) {
@@ -48,5 +49,4 @@ public final class OnPageActions {
             default -> System.out.println("There are actions to implement remaining!");
         }
     }
-    /* This function executes any on page action it is called if it exists */
 }

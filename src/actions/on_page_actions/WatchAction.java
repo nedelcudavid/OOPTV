@@ -15,6 +15,9 @@ public final class WatchAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for this action are met,
+     if they are it adds the current movie to the current user's watched
+     movie list and adds an error/success node in the output array accordingly */
     static void watch(final ObjectNode outputNode, final ArrayNode outputArray) {
         RegisteredUser currentUser = Executable.getExe().getCurrentUser();
 
@@ -37,7 +40,4 @@ public final class WatchAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the conditions for this action are met,
-     if they are it adds the current movie to the current user's watched
-     movie list and adds an error/success node in the output array accordingly */
 }

@@ -32,7 +32,8 @@ public final class ChangePageActions {
         return action;
     }
 
-    /** This function executes any 'change page' action */
+    /** This function verifies if the user can navigate to the specified page
+     and go there if is permitted, otherwise adds the error node in the output array */
     public void execute(final InputAction inAct, final ObjectNode outNode,
                         final ArrayNode outArray) {
         Page currentPage = Executable.getExe().getCurrentPage();
@@ -75,7 +76,5 @@ public final class ChangePageActions {
             displayOutputForError(outNode, outArray);
         }
     }
-    /* This function verifies if the user can navigate to the specified page
-     and go there if is permitted, otherwise adds the error node in the output array */
 }
 

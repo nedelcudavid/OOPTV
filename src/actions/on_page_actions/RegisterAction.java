@@ -17,6 +17,9 @@ public final class RegisterAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the credentials of the user match with the ones of any user
+     from the database and registers the account only if the user doesn't exists, it also adds
+     an error/success node in the output array accordingly */
     static void register(final InputAction action, final ObjectNode outputNode,
                          final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentPage().equals(RegisterPage.getPage())) {
@@ -44,7 +47,4 @@ public final class RegisterAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the credentials of the user match with the ones of any user
-     from the database and registers the account only if the user doesn't exists, it also adds
-     an error/success node in the output array accordingly */
 }

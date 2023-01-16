@@ -21,6 +21,10 @@ public final class RateAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for this action are met,
+     if they are it adds a new rating to the current movie, adds it to
+     the current user's rated movie list and adds an error/success node in
+     the output array accordingly */
     static void rate(final InputAction action, final ObjectNode outputNode,
                      final ArrayNode outputArray) {
         RegisteredUser currentUser = Executable.getExe().getCurrentUser();
@@ -46,11 +50,9 @@ public final class RateAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the conditions for this action are met,
-     if they are it adds a new rating to the current movie, adds it to
-     the current user's rated movie list and adds an error/success node in
-     the output array accordingly */
 
+    /** This function executes the rate action itself and
+     adds the new rate everywhere the movie is found */
     private static void addRateEverywhere(final int newRating) {
         RegisteredUser currentUser = Executable.getExe().getCurrentUser();
 
@@ -94,6 +96,4 @@ public final class RateAction {
         Database.getContent().getMoviesDB().set(movieIdx, ratedMovie);
         /* Actualises the movie from the movie database (adds the new rating to it) */
     }
-    /* This function executes the rate action itself and
-     adds the new rate everywhere the movie is found */
 }

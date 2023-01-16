@@ -21,6 +21,9 @@ public final class SubscribeAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for this action are met,
+     if they are it adds one of the current movie's genres to the current user's
+     subscribedGenres list and adds an error/success node in the output array in necessary */
     static void subscribe(final InputAction action, final ObjectNode outputNode, final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentPage().equals(SeeDetailsPage.getPage())) {
             if (Executable.getExe().getCurrentUser() != null) {
@@ -45,6 +48,9 @@ public final class SubscribeAction {
         }
     }
 
+    /** This function verifies if the conditions for this action are met,
+     if they are it adds a recommendation notification to the current user's
+     notifications list */
     public static void giveRecommendation(final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentUser().getCredentials().getAccountType().equals("premium")) {
             ArrayList<String> allGenres = new ArrayList<>();

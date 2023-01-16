@@ -16,6 +16,10 @@ public final class LikeAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for this action are met,
+     if they are it adds a like to the current movie, adds it to the
+     current user's liked movie list and adds an error/success node in
+     the output array accordingly */
     static void like(final ObjectNode outputNode, final ArrayNode outputArray) {
         RegisteredUser currentUser = Executable.getExe().getCurrentUser();
 
@@ -40,11 +44,9 @@ public final class LikeAction {
             displayOutputForError(outputNode, outputArray);
         }
     }
-    /* This function verifies if the conditions for this action are met,
-     if they are it adds a like to the current movie, adds it to the
-     current user's liked movie list and adds an error/success node in
-     the output array accordingly */
 
+    /** This function executes the like action itself and
+     adds a like everywhere the movie is found */
     private static void addLikeEverywhere() {
         RegisteredUser currentUser = Executable.getExe().getCurrentUser();
 
@@ -100,6 +102,4 @@ public final class LikeAction {
         Database.getContent().getMoviesDB().set(movieIdx, updatedMovie);
         /* Actualises the movie from the movie database (adds 1 like to it) */
     }
-    /* This function executes the like action itself and
-     adds a like everywhere the movie is found */
 }
