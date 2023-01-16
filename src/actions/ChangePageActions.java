@@ -42,21 +42,9 @@ public final class ChangePageActions {
             if (Executable.getExe().getCurrentUser() != null && !inAct.getPage().equals("logout")) {
                 if (!inAct.getType().equals("back")) {
                     if (currentPage.equals(SeeDetailsPage.getPage())) {
-                        if (inAct.getPage().equals("see details")) {
-                            Executable exe = Executable.getExe();
-                            for (int i = 0; i < exe.getCurrentMovieList().size(); i++) {
-                                if (exe.getCurrentMovieList().get(i).getName().equals(inAct.getMovie())) {
-                                    Executable.getExe().getCurrentUser().getVisitedPages().push(currentPage);
-                                    Movie auxMovie = new Movie(Executable.getExe().getCurrentMovieList().get(0));
-                                    Executable.getExe().getCurrentUser().getVisitedMovies().push(auxMovie);
-                                    break;
-                                }
-                            }
-                        } else {
-                            Executable.getExe().getCurrentUser().getVisitedPages().push(currentPage);
-                            Movie auxMovie = new Movie(Executable.getExe().getCurrentMovieList().get(0));
-                            Executable.getExe().getCurrentUser().getVisitedMovies().push(auxMovie);
-                        }
+                        Executable.getExe().getCurrentUser().getVisitedPages().push(currentPage);
+                        Movie auxMovie = new Movie(Executable.getExe().getCurrentMovieList().get(0));
+                        Executable.getExe().getCurrentUser().getVisitedMovies().push(auxMovie);
                     } else {
                         if (inAct.getPage().equals("see details")) {
                             Executable exe = Executable.getExe();

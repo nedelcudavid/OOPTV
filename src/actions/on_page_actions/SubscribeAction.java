@@ -28,11 +28,8 @@ public final class SubscribeAction {
                 if (Executable.getExe().getCurrentMovieList().get(0).getGenres().contains(action.getSubscribedGenre())) {
                     if (!currentUser.getSubscribedGenres().contains(action.getSubscribedGenre())) {
                         currentUser.getSubscribedGenres().add(action.getSubscribedGenre());
-                        for (RegisteredUser user : Database.getContent().getUsersDB()) {
-                            if (user.getCredentials().getName().equals(currentUser.getCredentials().getName())) {
-                                user.getSubscribedGenres().add(action.getSubscribedGenre());
-                            }
-                        }
+                        int userIdx = Database.getContent().findCurrentUserIdx();
+                        Database.getContent().getUsersDB().get(userIdx).getSubscribedGenres().add(action.getSubscribedGenre());
                     } else {
                         displayOutputForError(outputNode, outputArray);
                     }
@@ -49,19 +46,17 @@ public final class SubscribeAction {
 
     public static void giveRecommendation(final ArrayNode outputArray) {
         if (Executable.getExe().getCurrentUser().getCredentials().getAccountType().equals("premium")) {
-            HashMap<String, Integer> topGenres = new HashMap<>();
             ArrayList<String> allGenres = new ArrayList<>();
-            allGenres.add("Action");
-            allGenres.add("Comedy");
-            allGenres.add("Crime");
-            allGenres.add("Drama");
-            allGenres.add("Fantasy");
-            allGenres.add("Horror");
-            allGenres.add("Mystery");
-            allGenres.add("Romance");
-            allGenres.add("Thriller");
-            allGenres.add("Western");
+            for (Movie movie : Database.getContent().getMoviesDB()) {
+                for (String genre : movie.getGenres()) {
+                    if (!allGenres.contains(genre)) {
+                        allGenres.add(genre);
+                    }
+                }
+            }
+            Collections.sort(allGenres);
 
+            HashMap<String, Integer> topGenres = new HashMap<>();
             RegisteredUser currentUser = Executable.getExe().getCurrentUser();
             for (String genre : allGenres) {
                 int genreLikes = 0;
