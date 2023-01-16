@@ -69,24 +69,12 @@ public final class InputAction {
         return startsWith;
     }
 
-    public void setStartsWith(final String startsWith) {
-        this.startsWith = startsWith;
-    }
-
     public InputFilters getFilters() {
         return filters;
     }
 
-    public void setFilters(final InputFilters filters) {
-        this.filters = filters;
-    }
-
     public String getCount() {
         return count;
-    }
-
-    public void setCount(final String count) {
-        this.count = count;
     }
 
     public String getMovie() {
@@ -97,51 +85,24 @@ public final class InputAction {
         this.movie = movie;
     }
 
-    public String getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectType(final String objectType) {
-        this.objectType = objectType;
-    }
-
     public int getRate() {
         return rate;
-    }
-
-    public void setRate(final int rate) {
-        this.rate = rate;
     }
 
     public String getSubscribedGenre() {
         return subscribedGenre;
     }
 
-    public void setSubscribedGenre(String subscribedGenre) {
-        this.subscribedGenre = subscribedGenre;
-    }
-
     public InputMovie getAddedMovie() {
         return addedMovie;
-    }
-
-    public void setAddedMovie(InputMovie addedMovie) {
-        this.addedMovie = addedMovie;
     }
 
     public String getDeletedMovie() {
         return deletedMovie;
     }
 
-    public void setDeletedMovie(String deletedMovie) {
-        this.deletedMovie = deletedMovie;
-    }
-
     public Movie getEntireMovie() {
         return entireMovie;
     }
 
-    public void setEntireMovie(Movie entireMovie) {
-        this.entireMovie = entireMovie;
-    }
 }

@@ -4,7 +4,7 @@ import platform.Executable;
 import platform.Movie;
 import platform.RegisteredUser;
 
-public class PaymentByTokens implements PaymentStrategy{
+public class PaymentByTokens implements PaymentStrategy {
 
     /** This function is created in order to pay the
      * movie with tokens and add it to your collection*/

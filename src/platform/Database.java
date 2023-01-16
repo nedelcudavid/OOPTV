@@ -85,6 +85,7 @@ public final class Database {
         return -1;
     }
 
+    /** This function calls 2 others to add/delete a movie */
     public void modifyDB(final InputAction inputAction, final ObjectNode outputNode,
                                final ArrayNode outputArray) {
         switch (inputAction.getFeature()) {
@@ -94,6 +95,7 @@ public final class Database {
         }
     }
 
+    /** This function adds a movie if the conditions are met */
     private void addMovie(final InputMovie addedMovie, final ObjectNode outputNode,
                           final ArrayNode outputArray) {
         Movie movieToAdd = new Movie(addedMovie);
@@ -112,6 +114,7 @@ public final class Database {
         }
     }
 
+    /** This function deletes a movie if the conditions are met */
     private void deleteMovie(final String deletedMovie, final ObjectNode outputNode,
                              final ArrayNode outputArray) {
         boolean movieExists = false;

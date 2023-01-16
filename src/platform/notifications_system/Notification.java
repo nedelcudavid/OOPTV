@@ -9,13 +9,17 @@ public abstract class Notification {
         this.movieName = movieName;
     }
 
+    /** This function adds the notification witch calls
+     *  it to the specified user's notifications list */
     public abstract void addNotificationToUser(RegisteredUser user);
 
+    /** movieName getter */
     public String getMovieName() {
         return movieName;
     }
 
-    public void setMovieName(String movieName) {
+    /** movieName setter */
+    public void setMovieName(final String movieName) {
         this.movieName = movieName;
     }
 

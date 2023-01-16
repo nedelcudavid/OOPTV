@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import platform.Database;
 import platform.Executable;
 import platform.Movie;
-import platform.RegisteredUser;
 import pages.Page;
 import pages.unauthenticated_pages.UnauthenticatedHomepage;
 import java.util.ArrayList;

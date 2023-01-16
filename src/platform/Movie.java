@@ -3,7 +3,6 @@ package platform;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import input.InputMovie;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 /** This class represents all the characteristics of a movie */
 public final class Movie extends InputMovie {
@@ -67,16 +66,8 @@ public final class Movie extends InputMovie {
         return sumRatings;
     }
 
-    public void setSumRatings(int sumRatings) {
-        this.sumRatings = sumRatings;
-    }
-
     public int getNumUsersWhoRated() {
         return numUsersWhoRated;
-    }
-
-    public void setNumUsersWhoRated(int numUsersWhoRatedThis) {
-        this.numUsersWhoRated = numUsersWhoRatedThis;
     }
 
     /** This method is created to make the addition to numLikes easier */
@@ -89,10 +80,12 @@ public final class Movie extends InputMovie {
         this.numRatings += addition;
     }
 
+    /** This method is created to make the subtraction from numRatings easier */
     public void subNumRating(final int subtraction) {
         this.numRatings -= subtraction;
     }
 
+    /** This method is created to make the addition to usersWhoRated easier */
     public void addUsersWhoRated(final int addition) {
         this.numUsersWhoRated += addition;
     }

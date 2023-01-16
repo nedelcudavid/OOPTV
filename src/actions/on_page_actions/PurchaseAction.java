@@ -16,6 +16,8 @@ public final class PurchaseAction {
         throw new UnsupportedOperationException("This is a utility class & can't be instantiated");
     }
 
+    /** This function verifies if the conditions for
+     * buying a movie are met and if so it places the order */
     static void purchase(final ObjectNode outputNode, final ArrayNode outputArray) {
         RegisteredUser currentUser = Executable.getExe().getCurrentUser();
 

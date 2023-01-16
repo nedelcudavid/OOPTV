@@ -1,7 +1,9 @@
 package platform.notifications_system;
 
-public class NotificationsFactory {
-    public Notification createNotification(String type, String message) {
+public final class NotificationsFactory {
+
+    /** This function creates any notification by given type */
+    public Notification createNotification(final String type, final String message) {
         if (type == null) {
             return null;
         }

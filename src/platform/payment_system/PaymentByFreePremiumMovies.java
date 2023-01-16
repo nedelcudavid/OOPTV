@@ -4,7 +4,7 @@ import platform.Executable;
 import platform.Movie;
 import platform.RegisteredUser;
 
-public class PaymentByFreePremiumMovies implements PaymentStrategy{
+public class PaymentByFreePremiumMovies implements PaymentStrategy {
 
     /** This function is created in order to pay the movie with
      *  free premium movies and add it to your collection*/

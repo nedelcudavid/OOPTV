@@ -15,25 +15,25 @@ public final class RegisteredUser extends InputUser {
     private int numFreePremiumMovies;
     private ArrayList<Movie> purchasedMovies;
     @JsonIgnore
-    private ArrayList<String> purchasedMoviesNames;
+    private final ArrayList<String> purchasedMoviesNames;
     private ArrayList<Movie> watchedMovies;
     @JsonIgnore
-    private ArrayList<String> watchedMoviesNames;
+    private final ArrayList<String> watchedMoviesNames;
     private ArrayList<Movie> likedMovies;
     @JsonIgnore
-    private ArrayList<String> likedMoviesNames;
+    private final ArrayList<String> likedMoviesNames;
     private ArrayList<Movie> ratedMovies;
     @JsonIgnore
-    private ArrayList<String> ratedMoviesNames;
+    private final ArrayList<String> ratedMoviesNames;
     @JsonIgnore
     private ArrayList<Movie> availableMovies;
     private ArrayList<Notification> notifications;
     @JsonIgnore
-    private ArrayList<String> subscribedGenres;
+    private final ArrayList<String> subscribedGenres;
     @JsonIgnore
-    private Stack<Page> visitedPages;
+    private final Stack<Page> visitedPages;
     @JsonIgnore
-    private Stack<Movie> visitedMovies;
+    private final Stack<Movie> visitedMovies;
     private static final int NUM_FREE_PREMIUM_MOVIES = 15;
 
     public RegisteredUser(final InputUser inputUser) {
@@ -139,32 +139,16 @@ public final class RegisteredUser extends InputUser {
         return purchasedMoviesNames;
     }
 
-    public void setPurchasedMoviesNames(final ArrayList<String> purchasedMoviesNames) {
-        this.purchasedMoviesNames = purchasedMoviesNames;
-    }
-
     public ArrayList<String> getWatchedMoviesNames() {
         return watchedMoviesNames;
-    }
-
-    public void setWatchedMoviesNames(final ArrayList<String> watchedMoviesNames) {
-        this.watchedMoviesNames = watchedMoviesNames;
     }
 
     public ArrayList<String> getLikedMoviesNames() {
         return likedMoviesNames;
     }
 
-    public void setLikedMoviesNames(final ArrayList<String> likedMoviesNames) {
-        this.likedMoviesNames = likedMoviesNames;
-    }
-
     public ArrayList<String> getRatedMoviesNames() {
         return ratedMoviesNames;
-    }
-
-    public void setRatedMoviesNames(final ArrayList<String> ratedMoviesNames) {
-        this.ratedMoviesNames = ratedMoviesNames;
     }
 
     public ArrayList<Notification> getNotifications() {
@@ -195,24 +179,12 @@ public final class RegisteredUser extends InputUser {
         return subscribedGenres;
     }
 
-    public void setSubscribedGenres(final ArrayList<String> subscribedGenres) {
-        this.subscribedGenres = subscribedGenres;
-    }
-
     public Stack<Page> getVisitedPages() {
         return visitedPages;
     }
 
-    public void setVisitedPages(Stack<Page> visitedPages) {
-        this.visitedPages = visitedPages;
-    }
-
     public Stack<Movie> getVisitedMovies() {
         return visitedMovies;
-    }
-
-    public void setVisitedMovies(Stack<Movie> visitedMovies) {
-        this.visitedMovies = visitedMovies;
     }
 
     /** This method is created to make the addition for numFreePremiumMovies easier */

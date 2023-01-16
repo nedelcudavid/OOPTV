@@ -74,7 +74,8 @@ public final class Executable {
                 case "on page" -> OnPageActions.getAction().execute(actions.get(cnt), outputNode,
                         outputArray);
                 case "back" -> back(outputNode, outputArray);
-                case "database" -> Database.getContent().modifyDB(actions.get(cnt), outputNode, outputArray);
+                case "database" -> Database.getContent().modifyDB(actions.get(cnt),
+                        outputNode, outputArray);
                 default -> System.out.println("Error at getting action type!");
             }
         }
