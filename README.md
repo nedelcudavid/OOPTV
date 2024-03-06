@@ -1,4 +1,4 @@
-# OOPTV: Java Streaming Platform
+# OOPTV
 ## Copyright 2022 Nedelcu Andrei-David
 
 ### Introduction
