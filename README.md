@@ -1,85 +1,99 @@
-# Tema 3 (Proiect Etapa 2) - POO TV
-## Copyright 2022 David Nedelcu 324CA
-___________________________________________________________________________________________________
+# OOPTV: Java Streaming Platform
+## Copyright 2022 Nedelcu Andrei-David
 
-	***Voi prezenta doar functionalitatile noi pentru aceasta etapa, deoarece
-	am explicat in prima etapa restul logicii (in vechiul README).***
-___________________________________________________________________________________________________
+### Introduction
 
-	Functionalitatea de 'subscribe' (actiune on page) este introdusa. Aceasta
-permite utilizatorului sa se aboneze unul din genurile filmului de pe pagina de
-'see details' pe care se afla daca filmul respectiv il contine si daca nu este deja
-in lista acestuia de subscribedGenres. Daca conditiile sunt indeplinite, genul este
-adaugat in lista acestuia, in caz contrar se afiseaza eroare.
-___________________________________________________________________________________________________
-	 
-	Funcionalitatea de a adauga sau sterge filme are o parte din logica in clasa
-Database este reprezentata de:
-- metoda modifyDB() care preia tipul actiunii si executa ce se cere
-- metoda addMovie() ce verifica daca filmul deja exista in baza de date; daca acesta
-exista vom afisa eroare la output,iar daca nu vom adauga filmul cu ajutorul design
-pattern-ului Observer
-- metoda deleteMovie() ce verifica daca filmul exista sau nu in baza de date; daca acesta
-nu exista vom afisa eroare, iar daca exista il vom sterge de peste tot unde apare cu 
-ajutorul design pattern-ului Observer
-___________________________________________________________________________________________________
-	 
-	Functionalitatea de a ne intoarce cu o pagina in urma (clasa BackAction) este
-reprezentata de metoda back() ce verifica daca exista un utilizator conectat, apoi verifica
-daca mai sunt pagini pe care putem naviga in urma, iar daca ambele conditii sunt indeplinite
-in functie de faptul daca pagina pe care urmeaza sa ne intoarcem este 'see details' sau nu
-vom extrage pagina sau si pagina si filmul din stivele create pentru acest scop si vom naviga
-inapoi cu ajutorul actiunii de 'change page' pe care am modificat-o putin pentru a se potrivi
-noilor intrebuintari. Paginile aflate in stive sunt introduse doar daca o actiune de 'change page'
-(care nu s-a produs prin intermediul metodei back()) a fost finalizata cu succes.
-___________________________________________________________________________________________________
+OOPTV in a Java-based backend for a movie streaming platform. Input is handled through JSON files, ensuring easy integration and data parsing. OOPTV encompasses various functionalities, including movie management, user authentication, and personalized recommendations. With its intuitive design and efficient processing, OOPTV promises an easy-to-use and pleasent experience for all users.
 
-	Functionalitate de a da o recomandare la finalul actiunilor pentru userii premium
-sub forma unei notificari a fost implementata in clasa SubscribeAction si este reprezentata
-de metoda giveRecommendation(). Aceasta ferifica daca exista user conectat dupa finalizarea
-actiunilor si apoi daca acesta este premium. Daca aceste conditii sunt intalnite, se colecteaza
-toate genurile disponibile in baza de date curenta, apoi se sorteaza lexicografic. Uremaza sa se
-sorteze in functie de numarul de like-uri al fiecrui gen cu ajutorul unui HashMap si apoi parcurse
-in ordine de la cel mai apreciat gen. Pe masura ce se parcurg se contruieste si o lista cu cele mai
-apreciate filme din fiecare gen care de astemnea se parcurg si se verifica daca a mai fost vazut.
-Cand se gaseste primul film care nu a mai fost vazut acesta se recomanda utlizatorului. Daca nu
-gasim un astfel de film vom pasa mai departe 'No recommendation'.
-___________________________________________________________________________________________________
+### Project Structure
 
-		***Design Pattern-uri adaugate in aceasta etapa***
+The project is organized into several packages, each serving a specific purpose:
 
-- Factory Design Pattern : a fost folosit pentru a construi notificari in functie de ce tip avem
-nvoie (ADD/DELETE/Recommendation), iar toata implementarea acestuia se gaseste in package-ul
--notifications_system- unde avem clasa abstracta Notification, cele 3 clase cu notificari specifice
-(AddMovieNotification, DeleteMovieNotification si RecommendationNotification) si NotificationFactory
-care ne ajuta sa cream pe loc o notificare dupa tip si film. Notification contine de asemenea metoda
-addNotificationToUser() ce adauga notificarea curenta in lista de notificari al userului specificat
+- **input**: Contains classes responsible for reading input data, designed following the JSON input pattern for easy parsing. Notably, I enhanced the InputCredentials class with the subBalance method to facilitate balance deduction.
 
-- Strategy Design Pattern : a fost folosit pentru a implementa metodele de plata disponibile pentru
-a cumpara un film, iar toata implementarea se gaseste in package-ul -payment_system- ce contine
-clasele PaymentByFreePremiumMovies ce contine metoda de plata folosind filme premium gratis,
-PaymentByTokens ce contine metoda de plata folosind tokens, PaymentSystem ce primeste tipul de cont
-ce vrea sa cumpere si in functie de asta efectueaza sau nu plata, urmand sa afiseze eroare daca nu
-reuseste plata (pe motiv de fonduri insuficiente) si interfata PaymentStrategy ce tine metoda pay().
+- **platform**: Houses the core features of the streaming platform:
 
-- Observer Design Pattern : a fost folosit pentru a efectua mai usor schimbarile bazei de date a
-filmelor, iar toata implementarea se afla in package-ul -changing_database_system- ce contiine
-clasa abstracta Observer cu metoda update(), observerul AddMovieObserver ce este responsabil
-de a adauga un film si de a notifica toti utilizatorii care sunt subscribed la cel putin unul din
-genurile filmului, observerul DeleteMovieObserver care este responsabil cu stergerea filmului de
-peste tot unde exista, notificarea tuturor userilor ce au cumparat filmul respectiv si restituirea
-creditelor in functie de tipul contului. Avem de asemnea clasa DatabaseChange ce organizeaza observerii
-si reprezinta logica din spatele patternului
-___________________________________________________________________________________________________
+  - *Movie*: Extends InputMovie and encapsulates movie attributes. Additionally, I implemented three additional methods (addNumLikes, addNumRating, and addRating) to aid data processing.
+  
+  - *RegisteredUser*: Extends InputUser and represents a registered user in the platform's database. It also features three additional methods to streamline data processing (subNumFreePremiumMovies, addTokensCount, and subTokensCount).
+  
+  - *Database*: A singleton class representing the platform's database, storing users, movies, and actions. It updates in real-time as the platform is used, with methods to find the index of the current user and movie in the database and to clear the database when necessary.
+  
+  - *Executable*: Another singleton class representing the program's execution, helping manage the current page, movie list, and user in real-time. This class includes methods to execute actions and populate the output array.
 
-## Feedback :
+- **pages**: Divided into two sub-packages:
 
-   -  Tema aceasta a fost foarte bine explicata, se vede ca se tine cont de
-feedback-ul de la cea precedenta. Big up!
-___________________________________________________________________________________________________
+  - *unauthenticated_pages*: Contains singleton classes for unauthenticated pages:
+  
+    - *UnauthenticatedHomepage*: Handles the unauthenticated homepage, including the logout functionality.
+    
+    - *LoginPage*: Manages the login page.
+    
+    - *RegisterPage*: Manages the registration page.
+    
+  - *authenticated_pages*: Contains singleton classes for authenticated pages:
+  
+    - *AuthenticatedHomepage*: Manages the authenticated homepage.
+    
+    - *MoviesPage*: Displays available movies.
+    
+    - *SeeDetails*: Shows details of selected movies.
+    
+    - *Upgrades*: Handles account upgrades.
 
-## Resources:
+  All these classes extend the abstract Page class and share a common method, validPagesToVisitFromHere(), to define navigation options.
 
-1. [OCW](https://ocw.cs.pub.ro/courses/poo-ca-cd)
-2. [GEEKFORGEEKS](https://www.geeksforgeeks.org/)
-3. [TUTORIALSPOINT](https://www.tutorialspoint.com/design_pattern/index.htm)
+- **actions**: Contains possible actions on the platform:
+
+  - *ChangePageActions*: A singleton class handling page change actions based on input commands.
+  
+  - *on_page_actions*: A sub-package for on-page actions:
+  
+    - *OnPageActions*: A singleton class executing on-page actions based on input commands.
+    
+    - *LoginAction*: Manages the login process, authenticating users and updating user data upon successful login.
+    
+    - *RegisterAction*: Handles user registration, checking for existing credentials and permitting registration if valid.
+    
+    - *SearchAction*: Filters current movies based on input strings.
+    
+    - *FilterAction*: Filters, sorts, and displays current movies based on various criteria.
+    
+    - *BuyTokensAction*: Allows users to purchase tokens if sufficient balance is available.
+    
+    - *BuyPremiumAccountAction*: Enables users to upgrade to a premium account if eligible.
+    
+    - *PurchaseAction*: Adds purchased movies to the user's library if sufficient tokens or premium credits are available.
+    
+    - *WatchAction*: Adds watched movies to the user's history if purchased.
+    
+    - *LikeAction*: Adds a like to the current movie and updates it accordingly.
+    
+    - *RateAction*: Adds a rating to the current movie and updates it accordingly.
+
+  If any action is not permitted due to the current page or incomplete conditions, an error message is displayed in the output.
+
+- **Main class**: Contains the readInput() and writeOutput() methods. The former reads data from input and constructs the database, while the latter displays the output array in corresponding files. The run() method from the Executable class is called between these static method calls in the main method, executing all actions and populating the output array.
+
+### Advanced Functionalities
+
+- **Subscribe Functionality**: Users can now subscribe to movie genres from the 'see details' page. If the movie contains the selected genre and is not already in their subscribedGenres list, it's added; otherwise, an error is displayed.
+
+- **Movie Management**: Adding or deleting movies now involves the Database class:
+  - The modifyDB() method handles the action type and execution.
+  - The addMovie() method checks if the movie already exists and adds it using the Observer design pattern if not.
+  - The deleteMovie() method checks if the movie exists and deletes it using the Observer design pattern if so.
+
+- **Page Navigation**: The BackAction class now facilitates navigating back one page, extracting the previous page and movie from the stacks created for this purpose.
+
+- **User Recommendations**: Premium users receive personalized movie recommendations at the end of actions. The SubscriptionAction class implements the giveRecommendation() method, collecting and sorting available genres, then recommending unseen movies based on likes and ratings.
+
+### Design Patterns
+
+In this stage, I incorporated several design patterns:
+
+- **Factory Design Pattern**: Used to create notifications based on type (ADD/DELETE/Recommendation). Implemented in the -notifications_system- package.
+  
+- **Strategy Design Pattern**: Implemented for payment methods when purchasing movies. Found in the -payment_system- package.
+  
+- **Observer Design Pattern**: Facilitates database changes. Implemented in the -changing_database_system- package.
