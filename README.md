@@ -96,4 +96,4 @@ In this stage, I incorporated several design patterns:
   
 - **Strategy Design Pattern**: Implemented for payment methods when purchasing movies. Found in the -payment_system- package.
   
-- **Observer Design Pattern**: Facilitates database changes. Implemented in the -changing_database_system- package.
+- **Observer Design Pattern**: Facilitates database changes. Implemented in the -changing_database_system- package. 
