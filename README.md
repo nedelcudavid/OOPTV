@@ -1,142 +1,85 @@
-# Tema 2 (Proiect Etapa 1) - POO TV
+# Tema 3 (Proiect Etapa 2) - POO TV
 ## Copyright 2022 David Nedelcu 324CA
 ___________________________________________________________________________________________________
 
-	Package-ul -input- contine toate clasele predestinate citirii inputului
-
-   Clasele din acest package sunt construite pe modelul celor de la tema 1,
-modelate dupa tiparul jsonurilor de input, in asa fel incas sa citim usor inputul.
-- clasa InputCredentials are adaaugata metoda subBalance care sa ne ajute sa 
-scadem din balance mai usor
+	***Voi prezenta doar functionalitatile noi pentru aceasta etapa, deoarece
+	am explicat in prima etapa restul logicii (in vechiul README).***
 ___________________________________________________________________________________________________
 
-	Package-ul -platform- contine caracteristicile de baza ale platformei noastre de streaming:
-
-- *Movie* clasa ce extinde InputMovie si contine caracteristicile unui film.
-Aceasta are 3 metode in plus care sa ne ajute la prelucrarea datelor din clasa
-(addNumLikes, addNumRating si addRating).
-
-- *RegisteredUser* clasa ce extinde InputUser si contine caracteristicile unui
-user inregistrat in baza de date a platformei. Aceasta are si ea adaugate 
-3 metode care sa faciliteze prelucrarea datelor (subNumFreePremiumMovies,
-addTokensCount si subTokensCount).
-
-- *Database* clasa singleton ce reprezina baza de date a platformei. Aceasta retine 
-toati userii, filmele, dar si actiunile si se modifica in timp real pe masura ce
-platforma este folosita. Aceasta contine 2 metode pentru a gasi indexul userului
-curent in baza de date (actiune folositoare cand vrem sa il modificam in baza de date)
-si pentru a gasi indexul filmului curent si inca o metoda pentru a goli baza de date.
-
-- *Executable* clasa singleton ce reprezinta executia programului, aceasta ne ajuta sa
-stocam pagina curenta, lista curenta de filme si userul curent.Ele se modifica in timp
-real pe masura ce userul foloseste platforma. Clasa are 3 metode: run(pune platforma in
-miscare si pana la final umple array-ul de output), displayOutputForSuccessfulAction(ce
-adauga un nod pentru o actiune reusita in output array) si displayOutputForError(ce adauga
-un nod pentru eroare in output array).
+	Functionalitatea de 'subscribe' (actiune on page) este introdusa. Aceasta
+permite utilizatorului sa se aboneze unul din genurile filmului de pe pagina de
+'see details' pe care se afla daca filmul respectiv il contine si daca nu este deja
+in lista acestuia de subscribedGenres. Daca conditiile sunt indeplinite, genul este
+adaugat in lista acestuia, in caz contrar se afiseaza eroare.
 ___________________________________________________________________________________________________
 	 
-   Package-ul -pages- contine 2 subpackage-uri:
-   
-   *-unauthenticated_pages-* ce contine clasele singleton:
-
-- *UnauthenticatedHomepage* (Pagina de home neautentificat)
-contine metoda logout ce ne delogheaza si ne muta pe aceasta pagina
-
-- *LoginPage* (Pagina de login)
-contine metoda enterLoginPage() ce ne muta pe aceasta pagina
-
-- *RegisterPage* (Pagina de intregistrare)
-contine metoda enterRegisterPage() ce ne muta pe aceasta pagina
-
-    *-authenticated_pages-* ce contine clasele singleton:
-    
-- *AuthenticatedHomepage* (Pagina de home autentificat)
-contine metoda enterAuthenticatedHomepage() ce ne muta pe aceasta pagina
-
-- *MoviesPage* (Pagina de filme)
-contine metoda showMovies() ce ne muta pe aceasta pagina si ne afiseaza
-lista de filme disponibile
-
-- *SeeDetails* (Pagina de selectare film)
-contine metoda pickMovie() ce ne muta pe aceasta pagina si ne afiseaza filmul ales
-
-- *Upgrades* (Pagina de inbunatatiri)
-contine metoda enterUpgradesPage() ce ne muta pe aceasat pagina
-
-   Toate aceste clase sunt extinse din clasa abstracta Page si au o metoda comuna
-validPagesToVisitFromHere() ce retine posibilitatile de navigare din fiecare pagina.
+	Funcionalitatea de a adauga sau sterge filme are o parte din logica in clasa
+Database este reprezentata de:
+- metoda modifyDB() care preia tipul actiunii si executa ce se cere
+- metoda addMovie() ce verifica daca filmul deja exista in baza de date; daca acesta
+exista vom afisa eroare la output,iar daca nu vom adauga filmul cu ajutorul design
+pattern-ului Observer
+- metoda deleteMovie() ce verifica daca filmul exista sau nu in baza de date; daca acesta
+nu exista vom afisa eroare, iar daca exista il vom sterge de peste tot unde apare cu 
+ajutorul design pattern-ului Observer
 ___________________________________________________________________________________________________
 	 
-   Package-ul -actions- contine actiunile posibile pe platforma noastra:
-   
-- *ChangePageActions* clasa singleton ce contine metoda execute() ce preia comanda
-de schimbare pagina din input si o executa in functie de pagina unde trebuie sa ajungem
-daca actiunea nu e permisa se afiseaza output de eroare
-
-   *-on_page_actions-* este package-ul pentru actiunile on page:
-
-- *OnPageActions* clasa singleton ce contine metoda execute() ce preia comanda
-actiunii din input si o executa in functie de nume, daca actiunea nu e permisa
-se afiseaza output de eroare
-
-- *LoginAction* este clasa utilitara ce realizeaza actiunea de login prin
-metoda login() ce cauta userul in baza de date si daca credentialele se
-potrivesc se executa metoda statica enterAccount(), tot aici avem si
-metoda actualiseInfo() ce se apleaza in metoda enterAccount ce actulizeaza
-datele userului logat cu baza de date (in ca ca alti useri au adaugat like-uri
-sau ratinguri filmelor). Daca credentialele nu se potrivesc afisam eroare
-
-- *RegisterAction* este clasa utilitara ce realizeaza actiunea de register prin
-metoda register() ce cauta userul in baza de date si daca credentialele se
-gasesc vom afisa eroare, iar daca nu este permisa inregistrarea
-
-- *SearchAction* este clasa utilitara ce pastreaza in filme curente doar pe 
-cele care incep cu un anumit string dat in input
-
-- *FilterAction* este clasa utilitara ce filtreaza filmele curente si le
-pastreaza pe cele cu anumiti actori, care au anumite genuri si/sau le sorteaza
-dupa rating si durata (crescator sau descrescator)
-
-- *BuyTokensAction* este clasa utilitara ce ne permite sa cumparam tokeni
-daca avem destul in balance
-
-- *BuyPremiumAccountAction*  este clasa utilitara ce ne permite sa trecem
-la cont premium in caz ca nu avem
-
-- *PurchaseAction* este clasa utilitara ce ne adauga filmul la filme
-cumparate daca avem 2 tokeni sau credite premium pentru filme gratis
-
-- *WatchAction* este clasa utilitara ce ne adauga filmul la filme
-vizionate doar daca il avem cumparat
-
-- *LikeAction* este clasa utilitara ce adauga un like filmului curent si
-il actualizeaza peste tot cu like-ul adaugat
-
-- *RateAction* este clasa utilitara ce adauga un rating filmului curent si
-il actualizeaza peste tot cu ratingul-ul adaugat
-
-   In cazul in care oricare din actiuni nu este permisa in momentul apelarii
-din cauza paginii necorespunzaoare de unde este ceruta sau nu se respecta
-conditiile pana la capat, se va afisa eroare la output.
+	Functionalitatea de a ne intoarce cu o pagina in urma (clasa BackAction) este
+reprezentata de metoda back() ce verifica daca exista un utilizator conectat, apoi verifica
+daca mai sunt pagini pe care putem naviga in urma, iar daca ambele conditii sunt indeplinite
+in functie de faptul daca pagina pe care urmeaza sa ne intoarcem este 'see details' sau nu
+vom extrage pagina sau si pagina si filmul din stivele create pentru acest scop si vom naviga
+inapoi cu ajutorul actiunii de 'change page' pe care am modificat-o putin pentru a se potrivi
+noilor intrebuintari. Paginile aflate in stive sunt introduse doar daca o actiune de 'change page'
+(care nu s-a produs prin intermediul metodei back()) a fost finalizata cu succes.
 ___________________________________________________________________________________________________
 
-- Clasa *Main* contine metodele readInput() si writeOutput(), prima preia
-date din input si construieste baza de date, iar a doua afiseaza array-ul
-de output in fisierele corespunzatoare fiecarui test. Intre apelarile acestor
-metode statice in main se apeleaza metoda run() din clasa Executable ce are
-rolul de a executa toate actiunile si de a umple array-ul de output.
+	Functionalitate de a da o recomandare la finalul actiunilor pentru userii premium
+sub forma unei notificari a fost implementata in clasa SubscribeAction si este reprezentata
+de metoda giveRecommendation(). Aceasta ferifica daca exista user conectat dupa finalizarea
+actiunilor si apoi daca acesta este premium. Daca aceste conditii sunt intalnite, se colecteaza
+toate genurile disponibile in baza de date curenta, apoi se sorteaza lexicografic. Uremaza sa se
+sorteze in functie de numarul de like-uri al fiecrui gen cu ajutorul unui HashMap si apoi parcurse
+in ordine de la cel mai apreciat gen. Pe masura ce se parcurg se contruieste si o lista cu cele mai
+apreciate filme din fiecare gen care de astemnea se parcurg si se verifica daca a mai fost vazut.
+Cand se gaseste primul film care nu a mai fost vazut acesta se recomanda utlizatorului. Daca nu
+gasim un astfel de film vom pasa mai departe 'No recommendation'.
+___________________________________________________________________________________________________
+
+		***Design Pattern-uri adaugate in aceasta etapa***
+
+- Factory Design Pattern : a fost folosit pentru a construi notificari in functie de ce tip avem
+nvoie (ADD/DELETE/Recommendation), iar toata implementarea acestuia se gaseste in package-ul
+-notifications_system- unde avem clasa abstracta Notification, cele 3 clase cu notificari specifice
+(AddMovieNotification, DeleteMovieNotification si RecommendationNotification) si NotificationFactory
+care ne ajuta sa cream pe loc o notificare dupa tip si film. Notification contine de asemenea metoda
+addNotificationToUser() ce adauga notificarea curenta in lista de notificari al userului specificat
+
+- Strategy Design Pattern : a fost folosit pentru a implementa metodele de plata disponibile pentru
+a cumpara un film, iar toata implementarea se gaseste in package-ul -payment_system- ce contine
+clasele PaymentByFreePremiumMovies ce contine metoda de plata folosind filme premium gratis,
+PaymentByTokens ce contine metoda de plata folosind tokens, PaymentSystem ce primeste tipul de cont
+ce vrea sa cumpere si in functie de asta efectueaza sau nu plata, urmand sa afiseze eroare daca nu
+reuseste plata (pe motiv de fonduri insuficiente) si interfata PaymentStrategy ce tine metoda pay().
+
+- Observer Design Pattern : a fost folosit pentru a efectua mai usor schimbarile bazei de date a
+filmelor, iar toata implementarea se afla in package-ul -changing_database_system- ce contiine
+clasa abstracta Observer cu metoda update(), observerul AddMovieObserver ce este responsabil
+de a adauga un film si de a notifica toti utilizatorii care sunt subscribed la cel putin unul din
+genurile filmului, observerul DeleteMovieObserver care este responsabil cu stergerea filmului de
+peste tot unde exista, notificarea tuturor userilor ce au cumparat filmul respectiv si restituirea
+creditelor in functie de tipul contului. Avem de asemnea clasa DatabaseChange ce organizeaza observerii
+si reprezinta logica din spatele patternului
 ___________________________________________________________________________________________________
 
 ## Feedback :
 
-   -  Din pacate, tema aceasa a fost mai sumar explicata, iar fisierele de ref si
-  input puteau fii realizate putin mai bine, avand in vedere ca acestea contineau
-  destule greseli sau informatii inutile. Ideea in sine cu platforma de streaming
-  e draguta si obiectivele temei cu siguranta sunt atinse. Big up!
+   -  Tema aceasta a fost foarte bine explicata, se vede ca se tine cont de
+feedback-ul de la cea precedenta. Big up!
 ___________________________________________________________________________________________________
 
 ## Resources:
 
 1. [OCW](https://ocw.cs.pub.ro/courses/poo-ca-cd)
 2. [GEEKFORGEEKS](https://www.geeksforgeeks.org/)
-3. [STACKOVERFLOW](https://stackoverflow.com/)
+3. [TUTORIALSPOINT](https://www.tutorialspoint.com/design_pattern/index.htm)
